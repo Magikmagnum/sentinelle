@@ -9,5 +9,98 @@
             "url": "http://api.sentinelle.com/v1",
             "description": "Api de Sentinelle"
         }
-    ]
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "operationId": "App\\Controller\\SecurityController::register",
+                "requestBody": {
+                    "request": "Register",
+                    "description": "Corp de la requete",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "telephone": {
+                                        "required": true,
+                                        "type": "string"
+                                    },
+                                    "passeword": {
+                                        "required": true,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inscription",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Security"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                },
+                "security": [
+                    "bearer"
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Security": {
+                "description": "Inscription a l'API Sentinelle",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "telephone": {
+                        "type": "string"
+                    },
+                    "passeword": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "description": "La resource n'existe pas",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "exemple": "L'article n'existe pas"
+                                },
+                                "status": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "apiKey",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
 }
