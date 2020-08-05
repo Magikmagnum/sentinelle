@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EcolesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +33,16 @@ class Ecoles
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ecoles")
      */
     private $manager;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Sessions::class, mappedBy="ecole")
+     */
+    private $sessions;
+
+    public function __construct()
+    {
+        $this->sessions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -69,6 +81,37 @@ class Ecoles
     public function setManager(?User $manager): self
     {
         $this->manager = $manager;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sessions[]
+     */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(Sessions $session): self
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->sessions[] = $session;
+            $session->setEcole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(Sessions $session): self
+    {
+        if ($this->sessions->contains($session)) {
+            $this->sessions->removeElement($session);
+            // set the owning side to null (unless already changed)
+            if ($session->getEcole() === $this) {
+                $session->setEcole(null);
+            }
+        }
 
         return $this;
     }
