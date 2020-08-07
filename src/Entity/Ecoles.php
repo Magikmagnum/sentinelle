@@ -2,10 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\EcolesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use DateTimeZone;
+
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EcolesRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=EcolesRepository::class)
@@ -16,16 +21,19 @@ class Ecoles
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"ecole:new"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"ecole:new"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"ecole:new"})
      */
     private $devise;
 
@@ -39,9 +47,21 @@ class Ecoles
      */
     private $sessions;
 
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups({"ecole:new"})
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
     public function __construct()
     {
         $this->sessions = new ArrayCollection();
+        $this->createdAt = new DateTime('now', new \DateTimeZone('Africa/Libreville'));
     }
 
     public function getId(): ?int
@@ -112,6 +132,30 @@ class Ecoles
                 $session->setEcole(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(): self
+    {
+        $this->updatedAt = new DateTime('now', new \DateTimeZone('Africa/Libreville'));
 
         return $this;
     }

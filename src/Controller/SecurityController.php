@@ -15,7 +15,10 @@ class SecurityController extends AbstractController
 {
     
     /**
-     * @OA\POST(
+     * 
+     * @Route("/register", name="security_register", methods={"POST"})
+     * 
+     * @OA\Post(
      *  path="/register",
      *  security={"bearer"},
      *  @OA\RequestBody(
@@ -23,9 +26,8 @@ class SecurityController extends AbstractController
      *      description="Corp de la requete",
      *      required=true,
      *      @OA\JsonContent(
-     *         
-     *          @OA\Property(type="string", property="telephone", required=true),
-     *          @OA\Property(type="string", property="passeword", required=true),
+     *          @OA\Property(type="string", property="telephone", required=true, example="+24104609874"),
+     *          @OA\Property(type="string", property="passeword", required=true, example="emileA15ans"),
      *      )
      *  ), 
      * 
@@ -38,7 +40,6 @@ class SecurityController extends AbstractController
      *  @OA\Response( response="404", ref="#/components/responses/NotFound" )
      * 
      * )
-     * @Route("/register", name="security_register", methods={"POST"})
      */
     public function register(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
     {

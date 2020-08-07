@@ -24,11 +24,13 @@
                                 "properties": {
                                     "telephone": {
                                         "required": true,
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "+24104609874"
                                     },
                                     "passeword": {
                                         "required": true,
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "emileA15ans"
                                     }
                                 },
                                 "type": "object"
@@ -84,10 +86,11 @@
                             "properties": {
                                 "message": {
                                     "type": "string",
-                                    "exemple": "L'article n'existe pas"
+                                    "example": "L'article n'existe pas"
                                 },
                                 "status": {
-                                    "type": "integer"
+                                    "type": "integer",
+                                    "example": 404
                                 }
                             },
                             "type": "object"
