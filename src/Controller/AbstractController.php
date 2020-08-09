@@ -5,6 +5,14 @@ namespace App\Controller;
 use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Parameter(
+ *      name="id",
+ *      in="path",
+ *      description="ID de la resource",
+ *      required=true,
+ *      @OA\Schema(type="integer"),
+ * )
+ * 
  * @OA\Response(
  *  response="NotFound",
  *  description="La resource n'existe pas",

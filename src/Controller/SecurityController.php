@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -20,6 +19,7 @@ class SecurityController extends AbstractController
      * 
      * @OA\Post(
      *  path="/register",
+     *  tags={"Securities"},
      *  security={"bearer"},
      *  @OA\RequestBody(
      *      request="Register",
@@ -44,31 +44,23 @@ class SecurityController extends AbstractController
     public function register(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
     {
         
-        try {
-            $data = json_decode($request->getContent());
+        $data = json_decode($request->getContent());
 
-            $user = new User();
-            $user->setTelephone($data->telephone);
-            $user->setRoles(['ROLE_USER']);
-            $user->setPassword($encoder->encodePassword($user, $data->password));
-    
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-    
-            $response = [
-                "errors" => false,
-                "status" => 201,
-                "data" => $user,
-            ];
+        $user = new User();
+        $user->setTelephone($data->telephone);
+        $user->setRoles(['ROLE_USER']);
+        $user->setPassword($encoder->encodePassword($user, $data->password));
 
-        } catch (\Throwable $e) {
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_BAD_REQUEST,
-                "message" => $e->getMessage()
-            ];
-        }
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        $response = [
+            "errors" => false,
+            "status" => 201,
+            "data" => $user,
+        ];
+
         return $this->json($response, $response["status"], []);
     }
 }

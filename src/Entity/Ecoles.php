@@ -4,12 +4,14 @@ namespace App\Entity;
 
 use DateTime;
 use DateTimeZone;
+use DateTimeInterface;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\EcolesRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -28,6 +30,7 @@ class Ecoles
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"ecole:new"})
+     * @Assert\NotBlank
      */
     private $nom;
 
@@ -50,11 +53,14 @@ class Ecoles
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"ecole:new"})
+     * @Assert\NotBlank
+     * @var \DateTimeInterface
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTimeInterface|null
      */
     private $updatedAt;
 

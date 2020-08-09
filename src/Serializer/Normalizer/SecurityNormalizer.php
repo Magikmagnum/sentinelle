@@ -12,8 +12,8 @@ use OpenApi\Annotations as OA;
  *  schema="Security",
  *  description="Inscription a l'API Sentinelle",
  *  @OA\Property(type="integer", property="id"),
- *  @OA\Property(type="string", property="telephone"),
- *  @OA\Property(type="string", property="passeword"),
+ *  @OA\Property(type="string", property="telephone", example="+241 74 60 98 74"),
+ *  @OA\Property(type="string", property="passeword", example="couCou45"),
  * )
  */
 class SecurityNormaliserNormalizer implements NormalizerInterface, CacheableSupportsMethodInterface
@@ -36,7 +36,7 @@ class SecurityNormaliserNormalizer implements NormalizerInterface, CacheableSupp
 
     public function supportsNormalization($data, $format = null): bool
     {
-        return $data instanceof \App\Entity\BlogPost;
+        return $data instanceof \App\Entity\User;
     }
 
     public function hasCacheableSupportsMethod(): bool

@@ -11,8 +11,131 @@
         }
     ],
     "paths": {
+        "/ecoles": {
+            "get": {
+                "tags": [
+                    "Ecoles"
+                ],
+                "operationId": "App\\Controller\\EcoleController::index",
+                "responses": {
+                    "200": {
+                        "description": "Liste des ecoles inscritent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Ecole"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    "bearer"
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Ecoles"
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/EcoleUpdate"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Detail d'une ecole en particulier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ecole"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    "bearer"
+                ]
+            }
+        },
+        "/ecoles/{id}": {
+            "get": {
+                "tags": [
+                    "Ecoles"
+                ],
+                "operationId": "App\\Controller\\EcoleController::show",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail d'une ecole en particulier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EcoleShow"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    "bearer"
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Ecoles"
+                ],
+                "operationId": "App\\Controller\\EcoleController::edit",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/EcoleUpdate"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Detail d'une ecole en particulier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ecole"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    "bearer"
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Ecoles"
+                ],
+                "operationId": "App\\Controller\\EcoleController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id"
+                    }
+                ],
+                "security": [
+                    "bearer"
+                ]
+            }
+        },
         "/register": {
             "post": {
+                "tags": [
+                    "Securities"
+                ],
                 "operationId": "App\\Controller\\SecurityController::register",
                 "requestBody": {
                     "request": "Register",
@@ -61,6 +184,35 @@
     },
     "components": {
         "schemas": {
+            "Ecole": {
+                "description": "Ecole",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string",
+                        "example": "Lycée Privée Saint Esprit"
+                    },
+                    "devise": {
+                        "type": "string",
+                        "example": "Union - Travail - Justice"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "EcoleShow": {
+                "description": "Ecole",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Ecole"
+                    }
+                ]
+            },
             "Security": {
                 "description": "Inscription a l'API Sentinelle",
                 "properties": {
@@ -68,10 +220,12 @@
                         "type": "integer"
                     },
                     "telephone": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "+241 74 60 98 74"
                     },
                     "passeword": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "couCou45"
                     }
                 },
                 "type": "object"
@@ -91,6 +245,42 @@
                                 "status": {
                                     "type": "integer",
                                     "example": 404
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "id": {
+                "name": "id",
+                "in": "path",
+                "description": "ID de la resource",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        },
+        "requestBodies": {
+            "EcoleUpdate": {
+                "description": "Valeurs du formulaire",
+                "required": [
+                    "nom"
+                ],
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "nom": {
+                                    "type": "string",
+                                    "example": "Lycée Leon Mba"
+                                },
+                                "devise": {
+                                    "type": "string",
+                                    "example": "Union - Travaile - Justice"
                                 }
                             },
                             "type": "object"
