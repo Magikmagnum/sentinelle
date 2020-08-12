@@ -36,7 +36,7 @@ class EcoleController extends AbstractController
      */
     public function index(EcolesRepository $ecolesRepository)
     {
-        if($data = $ecolesRepository->findAll()){
+        if ($data = $ecolesRepository->findAll()) {
             $response = $this->statusCode(Response::HTTP_OK, $data);
         } else {
             $response = $this->statusCode(Response::HTTP_NOT_FOUND);
@@ -63,7 +63,7 @@ class EcoleController extends AbstractController
      */
     public function show($id, EcolesRepository $ecolesRepository, NormalizerInterface $normalizer)
     {
-        if($data = $ecolesRepository->find($id)){
+        if ($data = $ecolesRepository->find($id)) {
             $response = $this->statusCode(Response::HTTP_OK, $data);
         } else {
             $response = $this->statusCode(Response::HTTP_NOT_FOUND);
@@ -112,7 +112,6 @@ class EcoleController extends AbstractController
             } else {
                 $response = $this->statusCode(Response::HTTP_BAD_REQUEST, ['nom' => 'Champs Obligatoir']);
             }
-
         } else {
             $response = $this->statusCode(Response::HTTP_UNAUTHORIZED);
         }
@@ -182,35 +181,19 @@ class EcoleController extends AbstractController
      */
     public function delete($id, EcolesRepository $ecolesRepository)
     {
-        if ($user = $this->getUser()) {
+        if ($ecoles = $ecolesRepository->find($id)) {
 
-            if ($ecoles = $ecolesRepository->find($id)) {
+            $this->denyAccessUnlessGranted('DELETE', $ecoles);
 
-                $this->denyAccessUnlessGranted('DELETE', $ecoles);
-
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($ecoles);
-                $em->flush();
-                $response = [
-                    "errors" => false,
-                    "status" => Response::HTTP_OK,
-                ];
-            } else {
-                $response = [
-                    "errors" => true,
-                    "status" => Response::HTTP_NOT_FOUND,
-                    "message" => 'Ressource inexistante'
-                ];
-            }
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($ecoles);
+            $em->flush();
+            $response = $this->statusCode(Response::HTTP_OK);
         } else {
-
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_UNAUTHORIZED,
-                "message" => "Connectez-vous pour mener cette action",
-            ];
+            $response = $this->statusCode(Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($response, $response["status"], []);
+
+        return $this->json($response, $response["status"]);
     }
 }
