@@ -69,28 +69,28 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
                 break;
 
             case Response::HTTP_BAD_REQUEST:
-                return $this->response(true, $statusCode, null, 'Requète invalide');
+                return $this->response(true, $statusCode, $data, 'Requète invalide');
                 break;
 
             case Response::HTTP_UNAUTHORIZED:
-                return $this->response(true, $statusCode, null, "Connectez-vous pour mener cette action");
+                return $this->response(true, $statusCode, $data, "Connectez-vous pour mener cette action");
                 break;
 
             case Response::HTTP_FORBIDDEN:
-                return $this->response(true, $statusCode, null, "Vous n'avez pas les droits requis pour mener cette action");
+                return $this->response(true, $statusCode, $data, "Vous n'avez pas les droits requis pour mener cette action");
                 break;
 
             case Response::HTTP_NOT_FOUND:
-                return $this->response(true, $statusCode, null, 'Ressource inexistante');
+                return $this->response(true, $statusCode, $data, 'Ressource inexistante');
                 break;
 
             case Response::HTTP_NOT_MODIFIED:
-                return $this->response(true, $statusCode, null, 'Ressource non modifier');
+                return $this->response(true, $statusCode, $data, 'Ressource non modifier');
                 break;
 
 
             case Response::HTTP_UNSUPPORTED_MEDIA_TYPE:
-                return $this->response(true, $statusCode, null, "Ressource pas supporté");
+                return $this->response(true, $statusCode, $data, "Ressource pas supporté");
                 break;
         }
     }

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\Sessions;
 use App\Repository\EcolesRepository;
 use App\Controller\AbstractController;

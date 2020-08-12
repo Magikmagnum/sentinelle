@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -13,13 +14,13 @@ class ExceptionController extends AbstractController
 {
     public function catchException(\Throwable $exception)
     {
-        //dd($exception->getstatusCode(), $exception->getMessage(), ); Access Denied
+        //dd($exception);
         
         if ($exception instanceof NotFoundHttpException) {
 
             $response = $this->statusCode(Response::HTTP_NOT_FOUND);
 
-        } elseif ($exception instanceof UniqueConstraintViolationException) {
+        } elseif ($exception instanceof UniqueConstraintViolationException || $exception instanceof \TypeError) {
 
             $response = $this->statusCode(Response::HTTP_BAD_REQUEST);
 

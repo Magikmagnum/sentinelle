@@ -2,39 +2,47 @@
 
 namespace App\Entity;
 
-use App\Repository\ClassesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ClassesRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=ClassesRepository::class)
  */
-class Classes
+class Classes extends Entity
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups({"classe:new"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
+     * @Groups({"classe:new"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nom;
 
     /**
+     * @Groups({"classe:new"})
      * @ORM\Column(type="integer")
      */
     private $classe;
 
     /**
+     * @Groups({"classe:new"})
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $examen;
 
     /**
+     * @Groups({"classe:new"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -69,6 +77,7 @@ class Classes
         $this->eleves = new ArrayCollection();
         $this->professeurs = new ArrayCollection();
         $this->evaluations = new ArrayCollection();
+        $this->createdAt = $this->getDatime('now');
     }
 
     public function getId(): ?int
@@ -78,24 +87,24 @@ class Classes
 
     public function getNom(): ?string
     {
-        return $this->classe;
+        return $this->nom;
     }
 
-    public function setNom(string $classe): self
+    public function setNom(string $nom): self
     {
-        $this->classe = $classe;
+        $this->nom = $nom;
 
         return $this;
     }
 
     public function getClasse(): ?int
     {
-        return $this->nom;
+        return $this->classe;
     }
 
-    public function setClasse(int $nom): self
+    public function setClasse(int $classe): self
     {
-        $this->nom = $nom;
+        $this->classe = $classe;
 
         return $this;
     }
@@ -129,9 +138,9 @@ class Classes
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $this->getDatime('now');
 
         return $this;
     }

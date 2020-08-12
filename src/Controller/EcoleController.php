@@ -194,6 +194,6 @@ class EcoleController extends AbstractController
         }
 
 
-        return $this->json($response, $response["status"]);
+        return $this->json($response, $response["status"], []);
     }
 }
