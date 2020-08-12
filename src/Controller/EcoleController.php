@@ -5,13 +5,12 @@ namespace App\Controller;
 use App\Entity\Ecoles;
 use OpenApi\Annotations as OA;
 use App\Repository\EcolesRepository;
+use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/ecoles")
@@ -35,14 +34,13 @@ class EcoleController extends AbstractController
      * 
      * @Route("", name="api_ecoles_list", methods={"GET"})
      */
-    public function index(EcolesRepository $ecolesRepository, NormalizerInterface $normalizer)
+    public function index(EcolesRepository $ecolesRepository)
     {
-        $response = [
-            "errors" => false,
-            "status" => Response::HTTP_CREATED,
-            "data" => $ecolesRepository->findAll()
-        ];
-
+        if($data = $ecolesRepository->findAll()){
+            $response = $this->statusCode(Response::HTTP_OK, $data);
+        } else {
+            $response = $this->statusCode(Response::HTTP_NOT_FOUND);
+        }
         return $this->json($response, $response["status"], [], ["groups" => "ecole:new"]);
     }
 
@@ -65,12 +63,11 @@ class EcoleController extends AbstractController
      */
     public function show($id, EcolesRepository $ecolesRepository, NormalizerInterface $normalizer)
     {
-        $response = [
-            "errors" => false,
-            "status" => Response::HTTP_CREATED,
-            "data" => $ecolesRepository->find($id)
-        ];
-
+        if($data = $ecolesRepository->find($id)){
+            $response = $this->statusCode(Response::HTTP_OK, $data);
+        } else {
+            $response = $this->statusCode(Response::HTTP_NOT_FOUND);
+        }
         return $this->json($response, $response["status"], [], ["groups" => "ecole:new"]);
     }
 
@@ -110,28 +107,14 @@ class EcoleController extends AbstractController
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($ecoles);
                     $em->flush();
-
-                    $response = [
-                        "errors" => false,
-                        "status" => Response::HTTP_CREATED,
-                        "data" => $ecoles
-                    ];
+                    $response = $this->statusCode(Response::HTTP_CREATED, $ecoles);
                 }
             } else {
-
-                $response = [
-                    "errors" => true,
-                    "status" => Response::HTTP_BAD_REQUEST,
-                    "message" => "Le champ nom est obligatoire"
-                ];
+                $response = $this->statusCode(Response::HTTP_BAD_REQUEST, ['nom' => 'Champs Obligatoir']);
             }
-        } else {
 
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_UNAUTHORIZED,
-                "message" => "Vous n'avez pas les droit requis pour mener cette action",
-            ];
+        } else {
+            $response = $this->statusCode(Response::HTTP_UNAUTHORIZED);
         }
 
         return $this->json($response, $response["status"], [], ["groups" => "ecole:new"]);
@@ -159,43 +142,25 @@ class EcoleController extends AbstractController
      */
     public function edit($id, Request $request, EcolesRepository $ecolesRepository, ValidatorInterface $validator)
     {
-        if ($user = $this->getUser()) {
-            if ($ecoles = $ecolesRepository->find($id)) {
+        if ($ecoles = $ecolesRepository->find($id)) {
 
-                $this->denyAccessUnlessGranted('EDIT', $ecoles);
+            $this->denyAccessUnlessGranted('EDIT', $ecoles);
 
-                $data = json_decode($request->getContent());
-                $ecoles->setNom($data->nom)->setUpdatedAt();
-                isset($data->devise) ? $ecoles->setDevise($data->devise) : null;
+            $data = json_decode($request->getContent());
 
-                if (!$response = $this->getErrors($ecoles, $validator)) {
+            isset($data->nom) ? $ecoles->setDevise($data->nom) : null;
+            isset($data->devise) ? $ecoles->setDevise($data->devise) : null;
+            $ecoles->setUpdatedAt();
 
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($ecoles);
-                    $em->flush();
+            if (!$response = $this->getErrors($ecoles, $validator)) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($ecoles);
+                $em->flush();
 
-                    $response = [
-                        "errors" => false,
-                        "status" => Response::HTTP_OK,
-                        "data" => $ecoles
-                    ];
-
-                }
-
-            } else {
-                $response = [
-                    "errors" => true,
-                    "status" => Response::HTTP_NOT_FOUND,
-                    "message" => 'Ressource inexistante'
-                ];
+                $response = $this->statusCode(Response::HTTP_OK, $ecoles);
             }
-
         } else {
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_UNAUTHORIZED,
-                "message" => "Connectez-vous pour mener cette action",
-            ];
+            $response = $this->statusCode(Response::HTTP_NOT_FOUND);
         }
 
         return $this->json($response, $response["status"], [], ["groups" => "ecole:new"]);
@@ -247,31 +212,5 @@ class EcoleController extends AbstractController
         }
 
         return $this->json($response, $response["status"], []);
-    }
-
-
-    
-    public function getErrors($entity, ValidatorInterface $validator)
-    {
-        $errors = $validator->validate($entity);
-
-        if (count($errors) > 0) {
-
-            $array = [];
-
-            foreach ($errors as $error) {
-                $array[$error->getPropertyPath()] = $error->getMessage();
-            }
-
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_BAD_REQUEST,
-                "message" => $array
-            ];
-
-            return $response;
-        }
-
-        return null;
     }
 }

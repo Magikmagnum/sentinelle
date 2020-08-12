@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use OpenApi\Annotations as OA;
+use App\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
 {
@@ -41,25 +42,33 @@ class SecurityController extends AbstractController
      * 
      * )
      */
-    public function register(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
+    public function register(Request $request, UserPasswordEncoderInterface $encoder, ValidatorInterface $validator)
     {
         
         $data = json_decode($request->getContent());
 
-        $user = new User();
-        $user->setTelephone($data->telephone);
-        $user->setRoles(['ROLE_USER']);
-        $user->setPassword($encoder->encodePassword($user, $data->password));
+        $errors = [];
+        isset($data->telephone) ? null : $errors['telephone'] = 'Champs Obligatoir';
+        isset($data->password) ? null : $errors['password'] = 'Champs Obligatoir';
+        
+        if(empty($errors)){
+            
+            $user = new User();
+            $user->setTelephone($data->telephone);
+            $user->setRoles(['ROLE_USER']);
+            $user->setPassword($encoder->encodePassword($user, $data->password));
+            
+            if (!$response = $this->getErrors($user, $validator)) {
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+                $response = $this->statusCode(Response::HTTP_CREATED, $user);
+            }
 
-        $response = [
-            "errors" => false,
-            "status" => 201,
-            "data" => $user,
-        ];
+        } else {
+            $response = $this->statusCode(Response::HTTP_BAD_REQUEST);
+        }
 
         return $this->json($response, $response["status"], []);
     }

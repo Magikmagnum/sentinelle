@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -17,38 +17,23 @@ class ExceptionController extends AbstractController
         
         if ($exception instanceof NotFoundHttpException) {
 
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_NOT_FOUND ,
-                "message" => 'Aucun itinéraire trouvé',
-            ];
+            $response = $this->statusCode(Response::HTTP_NOT_FOUND);
 
         } elseif ($exception instanceof UniqueConstraintViolationException) {
-        
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_BAD_REQUEST,
-                "message" => 'Valeur indisponible'
-            ];
-            
+
+            $response = $this->statusCode(Response::HTTP_BAD_REQUEST);
+
         } elseif ($exception instanceof AccessDeniedException || $exception instanceof AccessDeniedHttpException) {
-        
-            $response = [
-                "errors" => true,
-                "status" => Response::HTTP_FORBIDDEN,
-                "message" => "Vous n'avez pas les droit requis pour mener cette action"
-            ];
             
+            $response = $this->statusCode(Response::HTTP_FORBIDDEN);
+    
         } else{
-            
             $response = [
                 "errors" => true,
                 "status" => Response::HTTP_INTERNAL_SERVER_ERROR,
                 "message" => $exception->getMessage()
             ];
-
         }
-
 
         return $this->json($response, $response["status"]); 
     }

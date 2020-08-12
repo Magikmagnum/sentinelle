@@ -2,40 +2,47 @@
 
 namespace App\Entity;
 
-use App\Repository\SessionsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SessionsRepository;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=SessionsRepository::class)
  */
-class Sessions
+class Sessions extends Entity
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"session:new"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"session:new"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"session:new"})
      */
     private $debut_at;
     
     /**
      * @ORM\Column(type="date", nullable=true)
+     * @Groups({"session:new"})
      */
     private $fin_at;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"session:new"})
      */
     private $created_at;
 
@@ -58,6 +65,7 @@ class Sessions
     public function __construct()
     {
         $this->classes = new ArrayCollection();
+        $this->created_at = $this->getDatime('now');
     }
 
     public function getId(): ?int
@@ -106,9 +114,9 @@ class Sessions
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(): self
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = $this->getDatime('now');
 
         return $this;
     }
