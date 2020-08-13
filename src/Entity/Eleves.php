@@ -2,35 +2,42 @@
 
 namespace App\Entity;
 
-use App\Repository\ElevesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ElevesRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ElevesRepository::class)
  */
-class Eleves
+class Eleves extends Entity
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"eleve:new"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"eleve:new"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"eleve:new"})
+     * 
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="boolean")
+     * 
      */
     private $sexe;
 
@@ -61,6 +68,8 @@ class Eleves
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"eleve:new"})
+     * 
      */
     private $createdAt;
 
@@ -93,6 +102,7 @@ class Eleves
     {
         $this->notes = new ArrayCollection();
         $this->absences = new ArrayCollection();
+        $this->createdAt = $this->getDatime('now');
     }
 
     public function getId(): ?int
@@ -213,9 +223,9 @@ class Eleves
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $this->getDatime('now');
 
         return $this;
     }

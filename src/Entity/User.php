@@ -44,6 +44,11 @@ class User implements UserInterface
      */
     private $ecoles;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $email;
+
     public function __construct()
     {
         $this->ecoles = new ArrayCollection();
@@ -154,6 +159,18 @@ class User implements UserInterface
                 $ecole->setManager(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

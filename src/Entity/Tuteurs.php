@@ -5,37 +5,43 @@ namespace App\Entity;
 use App\Repository\TuteursRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TuteursRepository::class)
  */
-class Tuteurs
+class Tuteurs extends Entity
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"tuteur:new"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"tuteur:new"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tuteur:new"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tuteur:new"})
      */
     private $profession;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"tuteur:new"})
      */
     private $sexe;
 
@@ -45,6 +51,7 @@ class Tuteurs
     private $eleves;
 
     /**
+     * @Groups({"tuteur:new"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -57,6 +64,7 @@ class Tuteurs
     public function __construct()
     {
         $this->eleves = new ArrayCollection();
+        $this->createdAt = $this->getDatime('now');
     }
 
     public function getId(): ?int
@@ -160,9 +168,9 @@ class Tuteurs
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $this->getDatime('now');;
 
         return $this;
     }

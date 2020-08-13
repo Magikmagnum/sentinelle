@@ -42,6 +42,7 @@ class ClasseController extends AbstractController
         return $this->json($response, $response["status"], [], ["groups" => "classe:new"]);
     }
 
+    
     /**
      * @Route("/{id}", name="api_classes_new", methods={"POST"})
      */
