@@ -2,29 +2,34 @@
 
 namespace App\Entity;
 
-use App\Repository\MatieresRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\MatieresRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MatieresRepository::class)
  */
-class Matieres
+class Matieres extends Entity
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups({"matiere:new"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
+     * @Groups({"matiere:new"})
      * @ORM\Column(type="string", length=255)
      */
     private $matiere;
 
     /**
+     * @Groups({"matiere:new"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -35,6 +40,7 @@ class Matieres
     private $updatedAt;
 
     /**
+     * @Groups({"matiere:new"})
      * @ORM\Column(type="string", length=8, nullable=true)
      */
     private $abreger;
@@ -47,6 +53,7 @@ class Matieres
     public function __construct()
     {
         $this->professeurs = new ArrayCollection();
+        $this->createdAt = $this->getDatime();
     }
 
     public function getId(): ?int
@@ -83,9 +90,9 @@ class Matieres
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $this->getDatime();
 
         return $this;
     }

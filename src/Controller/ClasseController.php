@@ -56,12 +56,11 @@ class ClasseController extends AbstractController
 
         $errors = [];
         isset($data->classe) ? null : $errors['classe'] = 'Champs Obligatoir';
-        isset($data->examen) ? null : $errors['examen'] = 'Champs Obligatoir';
 
         if (empty($errors)) {
 
             $classe = new Classes;
-            $classe->setExamen($data->examen)->setClasse($data->classe)->setSession($session);
+            $classe->setClasse($data->classe)->setSession($session);
             isset($data->nom) ? $classe->setNom($data->nom) : null;
 
             if (!$response = $this->getErrors($classe, $validator)) {
@@ -93,7 +92,6 @@ class ClasseController extends AbstractController
             $data = json_decode($request->getContent());
 
             isset($data->classe) ? $classe->setClasse($data->classe) : null;
-            isset($data->examen) ? $classe->setExamen($data->examen) : null;
             isset($data->nom) ? $classe->setNom($data->nom) : null;
 
             if (!$response = $this->getErrors($classe, $validator)) {

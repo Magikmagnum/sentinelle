@@ -15,6 +15,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Classes extends Entity
 {
+    const NIVEAU = [
+
+        1 =>  'Terminale A1',
+        2 =>  'Terminale A2',
+        3 =>  'Terminale B',
+        4 =>  'Terminale C',
+        5 =>  'Terminale D',
+
+        6 =>  'Première A1',
+        7 =>  'Première A2',
+        8 =>  'Première B',
+        9 =>  'Première S',
+
+        10 => 'Seconde LE',
+        11 => 'Seconde S',
+
+        12 => '3 eme',
+        13 => '4 eme',
+        14 => '5 eme',
+        15 => '6 eme'
+
+    ];
+
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -90,6 +114,12 @@ class Classes extends Entity
         return $this->nom;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $nom
+     * @return self
+     */
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
@@ -97,14 +127,15 @@ class Classes extends Entity
         return $this;
     }
 
-    public function getClasse(): ?int
+    public function getClasse(): ?string
     {
-        return $this->classe;
+        return self::NIVEAU[$this->classe];
     }
 
     public function setClasse(int $classe): self
     {
         $this->classe = $classe;
+        ($classe == 12 || ($classe <= 5 && $classe > 0)) ? $this->setExamen(true) : $this->setExamen(false);
 
         return $this;
     }
